@@ -65,6 +65,7 @@ body{
     background:linear-gradient(135deg,#ff7a8f,#ffb6c1);
     color:#fff;
     text-decoration:none;
+    cursor:pointer;
 }
 .footer{
     text-align:center;
@@ -79,7 +80,7 @@ body{
 <div class="hero">
 
     <div class="logo">
-        <img src="xinggeIcon.png">
+        <img src="xinggeIcon.png" alt="知我">
     </div>
 
     <h1>知我</h1>
@@ -125,8 +126,8 @@ body{
             欢迎联系我们。
         </p>
 
-        <a class="contact-btn"
-           href="mailto:guoxuetansuo@163.com">
+        <!-- 修改后的按钮：点击触发邮件唤起 + 复制邮箱 -->
+        <a class="contact-btn" href="javascript:void(0);" onclick="handleEmailClick('guoxuetansuo@163.com');">
             联系技术支持
         </a>
     </div>
@@ -136,6 +137,44 @@ body{
 <div class="footer">
 © 2026 知我 · All Rights Reserved
 </div>
+
+<script>
+function handleEmailClick(email) {
+    // 1. 尝试唤起系统邮件客户端
+    window.location.href = 'mailto:' + email;
+
+    // 2. 复制邮箱地址到剪贴板（提供备选）
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(email).then(function() {
+            alert('📋 邮箱地址已复制到剪贴板。\n如果邮件客户端未自动打开，请手动粘贴到收件人。');
+        }).catch(function() {
+            copyFallback(email);
+        });
+    } else {
+        copyFallback(email);
+    }
+}
+
+function copyFallback(email) {
+    var textarea = document.createElement('textarea');
+    textarea.value = email;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+        var success = document.execCommand('copy');
+        if (success) {
+            alert('📋 邮箱地址已复制到剪贴板。\n如果邮件客户端未自动打开，请手动粘贴到收件人。');
+        } else {
+            alert('❌ 复制失败，请手动输入邮箱：' + email);
+        }
+    } catch (e) {
+        alert('❌ 复制失败，请手动输入邮箱：' + email);
+    }
+    document.body.removeChild(textarea);
+}
+</script>
 
 </body>
 </html>
