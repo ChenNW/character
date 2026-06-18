@@ -147,6 +147,7 @@ body{
     text-decoration:none;
     font-weight:600;
     box-shadow:0 10px 20px rgba(255,122,143,.25);
+    cursor:pointer;
 }
 
 .footer{
@@ -154,6 +155,14 @@ body{
     padding:30px 20px 50px;
     color:#999;
     font-size:14px;
+}
+
+.email-text {
+    cursor:pointer;
+    color:#ff6f8d;
+    font-weight:500;
+    text-decoration:underline;
+    text-underline-offset:2px;
 }
 
 </style>
@@ -290,13 +299,14 @@ body{
             意见或建议，欢迎随时联系我们。
         </p>
 
-        <a class="contact-btn"
-           href="mailto:zhiwi@163.com">
+        <!-- 修改后的按钮：点击触发邮件唤起+复制 -->
+        <a class="contact-btn" href="javascript:void(0);" onclick="handleEmailClick('guoxuetansuo@163.com');">
            联系技术支持
         </a>
 
+        <!-- 修改后的邮箱文本：点击同样触发邮件唤起+复制 -->
         <p style="margin-top:20px;color:#777;">
-            邮箱：zhiwi@163.com
+            邮箱：<span class="email-text" onclick="handleEmailClick('zhiwi@163.com');">zhiwi@163.com</span>
         </p>
 
     </div>
@@ -307,6 +317,46 @@ body{
     © 2026 知我 · All Rights Reserved<br>
     最后更新时间：2026年6月
 </div>
+
+<script>
+function handleEmailClick(email) {
+    // 1. 尝试唤起系统邮件客户端
+    window.location.href = 'mailto:' + email;
+
+    // 2. 复制邮箱地址到剪贴板（提供备选）
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(email).then(function() {
+            alert('📋 邮箱地址已复制到剪贴板。\n如果邮件客户端未自动打开，请手动粘贴到收件人。');
+        }).catch(function() {
+            // 如果 clipboard API 失败，使用 fallback
+            copyFallback(email);
+        });
+    } else {
+        // 不支持 clipboard API 的浏览器
+        copyFallback(email);
+    }
+}
+
+function copyFallback(email) {
+    var textarea = document.createElement('textarea');
+    textarea.value = email;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+        var success = document.execCommand('copy');
+        if (success) {
+            alert('📋 邮箱地址已复制到剪贴板。\n如果邮件客户端未自动打开，请手动粘贴到收件人。');
+        } else {
+            alert('❌ 复制失败，请手动输入邮箱：' + email);
+        }
+    } catch (e) {
+        alert('❌ 复制失败，请手动输入邮箱：' + email);
+    }
+    document.body.removeChild(textarea);
+}
+</script>
 
 </body>
 </html>
